@@ -1,0 +1,32 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src"],
+  "includeVersion": true,
+//   "theme": "yaf",
+  "externalSymbolLinkMappings": {
+    "global": {
+      "AbortSignal": "https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal",
+      "Promise": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+      "Promise.then": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then"
+    },
+    "typescript": {
+      "Record": "https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type"
+    },
+    "node": {
+      "net.Server": "https://nodejs.org/api/net.html#class-netserver",
+      "net.Socket": "https://nodejs.org/api/net.html#class-netsocket"
+    },
+    "@types/node": {
+      "ListenOptions": "https://nodejs.org/api/net.html#serverlistenoptions-callback"
+    },
+    "typed-emitter": {
+      "TypedEventEmitter": "https://github.com/andywer/typed-emitter#readme"
+    }
+  },
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": false
+  }
+}
