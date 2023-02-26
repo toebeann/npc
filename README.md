@@ -12,7 +12,7 @@ Easy RPC over Named Pipes
 
 ## Description
 
-npc gives you the simple tools to implement and call RPC procedures from other processes, or from different threads of the same process.
+npc gives you the simple tools to implement and call functions defined in other processes, or in different threads of the same process.
 
 ```js
 // my-app/index.js
