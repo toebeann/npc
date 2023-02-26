@@ -12,7 +12,7 @@ Easy RPC over Named Pipes
 
 ## Description
 
-npc gives you the simple tools to implement functions in one process/thread, and call them from another.
+npc gives you simple tools to implement functions in one process/thread, and call them from another.
 
 ```js
 // my-app/index.js
