@@ -559,10 +559,13 @@ export async function notify(
         options.signal?.addEventListener('abort', abort);
 
         try {
-            const client = connect(`\\\\.\\pipe\\${options.endpoint}`, () => {
-                options.signal?.removeEventListener('abort', abort);
-                resolve(client);
-            });
+            const client = connect(
+                join(rootNamespace, options.endpoint),
+                () => {
+                    options.signal?.removeEventListener('abort', abort);
+                    resolve(client);
+                }
+            );
         } catch (e) {
             options.signal?.removeEventListener('abort', abort);
             reject(e);
