@@ -146,7 +146,10 @@ export type NpcEvents = {
 /**
  * Options for {@link Npc.listen}.
  */
-export type NpcListenOptions = Omit<ListenOptions, 'path' | 'port' | 'host' | 'ipv6Only'>;
+export type NpcListenOptions = Omit<
+    ListenOptions,
+    'path' | 'port' | 'host' | 'ipv6Only'
+>;
 
 /**
  * A simple implementation of an npc procedure.
@@ -155,14 +158,14 @@ export interface Npc extends TypedEmitter<NpcEvents> {
     /**
      * The endpoint at which the {@link Npc npc procedure} is available to be {@link call called} or {@link notify notified}.
      */
-    endpoint?: string | undefined,
+    endpoint?: string | undefined;
     /**
      * Stops the {@link Npc npc procedure} from accepting new connections and closes it when all clients have disconnected.
      * @param {boolean} [gracefulDisconnect=true] Whether existing connections should be maintained until they are ended.
      * Passing `false` will immediately disconnect all connected clients. Defaults to `true`.
      * @returns {Promise<Npc>} A {@link !Promise Promise} which when resolved indicates the underlying {@link node!net.Server Node.js Server} has closed.
      */
-    close(gracefulDisconnect?: boolean): Promise<Npc>,
+    close(gracefulDisconnect?: boolean): Promise<Npc>;
     /**
      * Starts the {@link Npc npc procedure} listening for client connections.
      * @remarks The {@link endpoint} will be prefixed with the {@link rootNamespace root npc namespace}.
@@ -171,8 +174,8 @@ export interface Npc extends TypedEmitter<NpcEvents> {
      * to pass to the underlying {@link node!net.Server Node.js Server}.
      * @returns {Promise<Npc>} A {@link !Promise Promise} which when resolved indicates the {@link Npc npc procedure} is ready to receive client connections.
      */
-    listen(endpoint: string, options?: NpcListenOptions): Promise<Npc>,
-};
+    listen(endpoint: string, options?: NpcListenOptions): Promise<Npc>;
+}
 
 /**
  * Initializes a new {@link Npc npc procedure}.
@@ -189,12 +192,20 @@ export function create(callback: Callback): Npc;
  * @param {(input: unknown) => T} middleware A middleware function which will be called on the input argument. The return of this function
  * will be passed to the callback as its input. Useful for inserting argument validation or transformation, for example.
  */
-export function create<T>(callback: (input: T) => Result, middleware: (input: unknown) => T): Npc;
-export function create<T = unknown>(callback: Callback | ((input: T) => Result), middleware?: (input: unknown) => T): Npc {
+export function create<T>(
+    callback: (input: T) => Result,
+    middleware: (input: unknown) => T
+): Npc;
+export function create<T = unknown>(
+    callback: Callback | ((input: T) => Result),
+    middleware?: (input: unknown) => T
+): Npc {
     const emitter = new EventEmitter() as TypedEmitter<NpcEvents>;
-    const cb = callbackSchema.parse(middleware
-        ? async (input: unknown) => callback(await middleware(input))
-        : callback);
+    const cb = callbackSchema.parse(
+        middleware
+            ? async (input: unknown) => callback(await middleware(input))
+            : callback
+    );
 
     let _server: Server | undefined;
     let _socket: Socket | undefined;
@@ -203,29 +214,33 @@ export function create<T = unknown>(callback: Callback | ((input: T) => Result),
         if (_socket?.writable) {
             return new Promise<void>((resolve, reject) => {
                 try {
-                    _socket?.write(`${JSON.stringify(response)}${EOL}`, 'utf8', (error) => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve();
+                    _socket?.write(
+                        `${JSON.stringify(response)}${EOL}`,
+                        'utf8',
+                        (error) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve();
+                            }
                         }
-                    });
+                    );
                 } catch (e) {
                     reject(e);
                 }
             });
         }
-    }
+    };
 
     const npc: Npc = Object.assign(emitter, {
         close: async (gracefulDisconnect = true) => {
             const closing = _server?.listening
                 ? new Promise<Npc>((resolve) =>
-                    _server?.close(() => {
-                        _server = undefined;
-                        resolve(npc);
-                    })
-                )
+                      _server?.close(() => {
+                          _server = undefined;
+                          resolve(npc);
+                      })
+                  )
                 : Promise.resolve(npc);
 
             if (!gracefulDisconnect) {
@@ -313,14 +328,15 @@ export function create<T = unknown>(callback: Callback | ((input: T) => Result),
                                         });
                                     }
                                 } catch (e) {
-                                    const parsedError = errorSchema.safeParse(e);
+                                    const parsedError =
+                                        errorSchema.safeParse(e);
                                     const error = parsedError.success
                                         ? parsedError.data
                                         : {
-                                            code: -32000,
-                                            message: 'Internal server error',
-                                            data: e,
-                                        };
+                                              code: -32000,
+                                              message: 'Internal server error',
+                                              data: e,
+                                          };
 
                                     npc.emit('error', error);
                                     if (parsed.data.id) {
@@ -344,7 +360,7 @@ export function create<T = unknown>(callback: Callback | ((input: T) => Result),
                         }
                     );
             });
-        }
+        },
     });
 
     return npc;

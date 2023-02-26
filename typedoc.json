@@ -2,7 +2,7 @@
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["src"],
   "includeVersion": true,
-//   "theme": "yaf",
+  // "theme": "yaf",
   "externalSymbolLinkMappings": {
     "global": {
       "AbortSignal": "https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal",
