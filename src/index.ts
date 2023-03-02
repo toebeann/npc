@@ -385,15 +385,6 @@ export type CallOptions = z.infer<typeof callOptionsSchema>;
  * Asynchronously calls an {@link Npc npc procedure} and awaits a response.
  * @remarks If you do not require any output from the procedure and do not need to ensure the procedure has completed before proceeding,
  * you should instead consider using {@link notify} as it is more efficient.
- * @param {CallOptions} options Options for calling the {@link Npc procedure}.
- * @returns {Promise<unknown>} A {@link !Promise Promise} which when resolves passes the output of the call to the {@link !Promise.then then} handler(s).
- * @see {@link notify}
- */
-export async function call(options: CallOptions): Promise<unknown>;
-/**
- * Asynchronously calls an {@link Npc npc procedure} and awaits a response.
- * @remarks If you do not require any output from the procedure and do not need to ensure the procedure has completed before proceeding,
- * you should instead consider using {@link notify} as it is more efficient.
  * @param {string} endpoint The endpoint at which the {@link Npc npc procedure} is listening.
  * @param {unknown} [input] An input argument to pass to the {@link Npc npc procedure}.
  * @param {AbortSignal} [signal] An {@link !AbortSignal AbortSignal} which will be used to abort awaiting a response.
@@ -405,6 +396,15 @@ export async function call(
     input?: unknown,
     signal?: AbortSignal
 ): Promise<unknown>;
+/**
+ * Asynchronously calls an {@link Npc npc procedure} and awaits a response.
+ * @remarks If you do not require any output from the procedure and do not need to ensure the procedure has completed before proceeding,
+ * you should instead consider using {@link notify} as it is more efficient.
+ * @param {CallOptions} options Options for calling the {@link Npc procedure}.
+ * @returns {Promise<unknown>} A {@link !Promise Promise} which when resolves passes the output of the call to the {@link !Promise.then then} handler(s).
+ * @see {@link notify}
+ */
+export async function call(options: CallOptions): Promise<unknown>;
 export async function call(
     endpointOrOptions: string | CallOptions,
     input?: unknown,
@@ -518,16 +518,6 @@ export async function call(
  * as soon as the input argument has been sent. This also means that if the procedure throws, the call to {@link notify} will neither throw nor output error information.
  *
  * If you wish to ensure the procedure has completed before proceeding or need to know whether the call succeeded, you should instead use {@link call}.
- * @param {CallOptions} options Options for notifying the {@link Npc procedure}.
- * @see {@link call}
- */
-export async function notify(options: CallOptions): Promise<unknown>;
-/**
- * Asynchronously notifies an {@link Npc npc procedure} without awaiting a response.
- * @remarks Differs from {@link call} in that the procedure will not transmit any response, and the returned {@link !Promise Promise} will resolve
- * as soon as the input argument has been sent. This also means that if the procedure throws, the call to {@link notify} will neither throw nor output error information.
- *
- * If you wish to ensure the procedure has completed before proceeding or need to know whether the call succeeded, you should instead use {@link call}.
  * @param {string} endpoint The endpoint at which the {@link Npc npc procedure} is listening.
  * @param {unknown} [input] An input argument to pass to the {@link Npc npc procedure}.
  * @param {AbortSignal} [signal] An {@link !AbortSignal AbortSignal} which will be used to abort connecting to the pipe or transmitting input.
@@ -538,6 +528,16 @@ export async function notify(
     input?: unknown,
     signal?: AbortSignal
 ): Promise<unknown>;
+/**
+ * Asynchronously notifies an {@link Npc npc procedure} without awaiting a response.
+ * @remarks Differs from {@link call} in that the procedure will not transmit any response, and the returned {@link !Promise Promise} will resolve
+ * as soon as the input argument has been sent. This also means that if the procedure throws, the call to {@link notify} will neither throw nor output error information.
+ *
+ * If you wish to ensure the procedure has completed before proceeding or need to know whether the call succeeded, you should instead use {@link call}.
+ * @param {CallOptions} options Options for notifying the {@link Npc procedure}.
+ * @see {@link call}
+ */
+export async function notify(options: CallOptions): Promise<unknown>;
 export async function notify(
     endpointOrOptions: string | CallOptions,
     input?: unknown,
