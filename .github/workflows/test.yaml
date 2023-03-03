@@ -3,7 +3,7 @@ name: npm test
 on:
   push:
     branches: ["main"]
-    paths: ["**.ts", "pnpm-lock.yaml", ".github/workflows/npm-test.yml"]
+    paths: ["**.ts", "pnpm-lock.yaml", ".github/workflows/test.yml"]
   pull_request:
     branches: ["main", "dev"]
   workflow_dispatch:
