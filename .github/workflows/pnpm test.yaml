@@ -1,4 +1,4 @@
-name: test
+name: pnpm test
 
 on:
   push:
