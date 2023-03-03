@@ -4,7 +4,7 @@
 
 Easy RPC over Named Pipes
 
-[![typedocs](https://img.shields.io/badge/docs-informational.svg?logo=typescript&labelColor=222&style=flat-square)](https://toebeann.github.io/npc "Read the documentation on Github Pages") [![license](https://img.shields.io/github/license/toebeann/npc.svg?logo=open-source-initiative&logoColor=3DA639&color=informational&labelColor=222&style=flat-square)](https://github.com/toebeann/npc/blob/main/LICENSE "View the license on GitHub")
+[![npm package version](https://img.shields.io/npm/v/@toebean/npc.svg?logo=npm&label&labelColor=222&style=flat-square)](https://npmjs.org/package/@toebean/npc "View npc on npm") [![npm package downloads](https://img.shields.io/npm/dw/@toebean/npc.svg?logo=npm&labelColor=222&style=flat-square)](https://npmjs.org/package/@toebean/npc "View npc on npm") [![typedocs](https://img.shields.io/badge/docs-informational.svg?logo=typescript&labelColor=222&style=flat-square)](https://toebeann.github.io/npc "Read the documentation on Github Pages") [![license](https://img.shields.io/github/license/toebeann/npc.svg?logo=open-source-initiative&logoColor=3DA639&color=informational&labelColor=222&style=flat-square)](https://github.com/toebeann/npc/blob/main/LICENSE "View the license on GitHub")
 
 [![pnpm test](https://img.shields.io/github/actions/workflow/status/toebeann/npc/pnpm-test.yml?logo=github&logoColor=aaa&label=npm%20test&labelColor=222&style=flat-square)](https://github.com/toebeann/npc/actions/workflows/pnpm-test.yml "View pnpm test on GitHub Actions") [![publish package](https://img.shields.io/github/actions/workflow/status/toebeann/npc/publish-package.yml?logo=github&logoColor=aaa&label=publish%20package&labelColor=222&style=flat-square)](https://github.com/toebeann/npc/actions/workflows/publish-package.yml "View publish package on GitHub Actions") [![publish docs](https://img.shields.io/github/actions/workflow/status/toebeann/npc/publish-docs.yml?branch=main&logo=github&logoColor=aaa&label=publish%20docs&labelColor=222&style=flat-square)](https://github.com/toebeann/npc/actions/workflows/publish-docs.yml "View publish docs on GitHub Actions")
 
@@ -53,19 +53,19 @@ At present, npc only supports Windows Named Pipes. Unix Named Pipes is not a pri
 ### [pnpm](https://pnpm.io "pnpm is a fast, disk space efficient package manager")
 
 ```shell
-pnpm add github:toebeann/npc
+pnpm add @toebean/npc
 ```
 
 ### [yarn](https://yarnpkg.com "Yarn is a package manager that doubles down as project manager")
 
 ```shell
-yarn add https://github.com/toebeann/npc.git
+yarn add @toebean/npc
 ```
 
 ### [npm](https://npmjs.com "npm is the package manager for Node.js")
 
 ```shell
-npm i github:toebeann/npc
+npm i @toebean/npc
 ```
 
 ## Usage
