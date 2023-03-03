@@ -29,7 +29,7 @@
     "test": "pnpm format:check",
     "format": "prettier -w .",
     "format:check": "prettier -c .",
-    "build": "rimraf dist && rimraf types && pnpm format && tsc"
+    "build": "rimraf dist && rimraf types && tsc"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.2",
