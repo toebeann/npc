@@ -10,11 +10,10 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os: [windows-latest]
         version: [16, lts/*, latest]
 
     steps:
