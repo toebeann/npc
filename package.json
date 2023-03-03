@@ -27,8 +27,8 @@
   "sideEffects": false,
   "scripts": {
     "test": "pnpm format:check",
-    "format": "prettier -w . --ignore-path .gitignore",
-    "format:check": "prettier -c . --ignore-path .gitignore",
+    "format": "prettier -w .",
+    "format:check": "prettier -c .",
     "build": "rimraf dist && rimraf types && pnpm format && tsc"
   },
   "devDependencies": {
