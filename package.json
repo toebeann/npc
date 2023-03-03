@@ -53,10 +53,8 @@
     "zod": "^3.20.6"
   },
   "files": [
-    "dist/**/*.*js",
-    "dist/**/*.*js.map",
-    "types/**/*.d.*ts",
-    "types/**/*.d.*ts.map"
+    "dist/**/*.js?(.map)",
+    "types/**/*.d.ts?(.map)"
   ],
   "engines": {
     "node": ">=16"
