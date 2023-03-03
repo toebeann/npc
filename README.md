@@ -166,7 +166,7 @@ The above call to `notify` will resolve as soon as the input argument `{ foo: "b
 
 ### Argument and return types
 
-Input arguments and return outputs are serialized to JSON using `JSON.stringify` before being transmitted over the named pipe, and deserialized using `JSON.parse` at the other end. This means that types which cannot be (de)serialized using these functions will be transmitted as `undefined`. We generally recommend sticking to [PODs](https://en.wikipedia.org/wiki/Passive_data_structure "plain old data objects") and [primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive) (with the exception of `bigint` and `symbol`).
+Input arguments and return outputs are serialized to JSON using `JSON.stringify` before being transmitted over the named pipe, and deserialized using `JSON.parse` at the other end. This means that types which cannot be (de)serialized using these functions will be transmitted as `undefined`. We generally recommend sticking to [PODs](https://en.wikipedia.org/wiki/Passive_data_structure "plain old data objects") and [primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive) (with the exception of `bigint` and `symbol`, which are not natively compatible with JSON).
 
 npc procedures only support a maximum of one argument for simplicity. If you require multiple arguments you can handle this with [PODs](https://en.wikipedia.org/wiki/Passive_data_structure "plain old data objects") (e.g. object literals, property bags) or arrays.
 
