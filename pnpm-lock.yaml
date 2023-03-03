@@ -13,7 +13,7 @@ specifiers:
   ts-node: ^10.9.1
   typed-emitter: ^2.1.0
   typedoc: ^0.23.26
-  typedoc-plugin-versions-cli: ^0.1.10
+  typedoc-plugin-versions-cli: ^0.1.12
   typedoc-theme-yaf: ^0.0.4
   typescript: ^4.9.5
   uuid: ^9.0.0
@@ -36,7 +36,7 @@ devDependencies:
   ts-node: 10.9.1_alpjt73dvgv6kni625hu7f2l4m
   typed-emitter: 2.1.0
   typedoc: 0.23.26_typescript@4.9.5
-  typedoc-plugin-versions-cli: 0.1.10_typedoc@0.23.26
+  typedoc-plugin-versions-cli: 0.1.12_typedoc@0.23.26
   typedoc-theme-yaf: 0.0.4_typedoc@0.23.26
   typescript: 4.9.5
 
@@ -1438,8 +1438,8 @@ packages:
       rxjs: 7.8.0
     dev: true
 
-  /typedoc-plugin-versions-cli/0.1.10_typedoc@0.23.26:
-    resolution: {integrity: sha512-xRLG/Mx0ubCUFv+myVFBO1+ecJvIB0XNW+lGzKhD8P/20mbxZT7MBSSqmxCRItdTKagmFGPM5+hlw3gxDTFvag==}
+  /typedoc-plugin-versions-cli/0.1.12_typedoc@0.23.26:
+    resolution: {integrity: sha512-tmGXo8T6gGW3hajMh+cZTRo50w6JJyOuCWBALGxZM0TOaRL4n0J3SanO2vFUrVd25QR/O5/1pdnTKW1ldcXmXg==}
     engines: {node: '>=16'}
     os: [win32, linux, darwin]
     hasBin: true
