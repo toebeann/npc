@@ -30,8 +30,8 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # - name: Publish to npm 🚀
-      #   uses: JS-DevTools/npm-publish@v1
-      #   with:
-      #     token: ${{ secrets.NPM_TOKEN }}
-      #     access: restricted
+      - name: Publish to npm 🚀
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: restricted
