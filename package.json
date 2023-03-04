@@ -67,5 +67,16 @@
   },
   "os": [
     "win32"
+  ],
+  "keywords": [
+    "RPC",
+    "IPC",
+    "remote procedure call",
+    "INPROC",
+    "named pipes",
+    "remote",
+    "procedure",
+    "call",
+    "npc"
   ]
 }
