@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Easy RPC over Named Pipes",
   "author": "Tobey Blaber (https://github.com/toebeann)",
+  "homepage": "https://toebeann.github.io/npc/",
   "repository": {
     "type": "git",
     "url": "https://github.com/toebeann/npc.git"
