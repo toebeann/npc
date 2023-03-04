@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    uses: toebeann/npc/.github/workflows/pnpm test.yml@main
+    uses: toebeann/npc/.github/workflows/pnpm-test.yml@main
 
   publish:
     needs: test
