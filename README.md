@@ -32,11 +32,11 @@ console.log(squared); // outputs 64
 
 At present, npc only supports Windows Named Pipes. Unix Named Pipes is not a priority for this package at present, but is certainly something we would like to add in future. Pull requests welcome!
 
-## Tables of contents
+## Table of contents
 
 - [npc 🛠️](#npc-️)
   - [Description](#description)
-  - [Tables of contents](#tables-of-contents)
+  - [Table of contents](#table-of-contents)
   - [Installation](#installation)
     - [pnpm](#pnpm)
     - [yarn](#yarn)
