@@ -261,10 +261,10 @@ export function create<T = unknown>(
                     _socket = socket;
 
                     _socket
-                        .on('close', () => {
+                        .once('close', () => {
                             npc.emit('close');
                         })
-                        .on('error', (data) => {
+                        .once('error', (data) => {
                             npc.emit('error', {
                                 code: -32000,
                                 message: 'Internal server error',
@@ -455,12 +455,12 @@ export async function call(
                     input: options.input,
                 };
 
-                socket.on('close', () => {
+                socket.once('close', () => {
                     options.signal?.removeEventListener('abort', abort);
                     reject();
                 });
 
-                socket.on('error', () => {
+                socket.once('error', () => {
                     options.signal?.removeEventListener('abort', abort);
                     reject();
                 });
@@ -586,11 +586,11 @@ export async function notify(
                 };
 
                 socket
-                    .on('close', () => {
+                    .once('close', () => {
                         options.signal?.removeEventListener('abort', abort);
                         reject();
                     })
-                    .on('error', () => {
+                    .once('error', () => {
                         options.signal?.removeEventListener('abort', abort);
                         reject();
                     })
