@@ -1,11 +1,14 @@
 {
-  "overrides": [
-    {
-      "files": ["*.*ts?(x)", "*.js?(x)"],
-      "options": {
-        "tabWidth": 4,
-        "singleQuote": true
-      }
-    }
-  ]
+  "tabWidth": 2,
+  "printWidth": 112,
+  "semi": false,
+  "singleQuote": false,
+  "jsxSingleQuote": false,
+  "trailingComma": "all",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "useTabs": false,
+  "quoteProps": "as-needed",
+  "endOfLine": "lf"
 }

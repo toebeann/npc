@@ -20,26 +20,26 @@ npc gives you simple tools to implement functions and events in one process or t
 // my-app/index.js
 
 // a simple function which returns the square of a given number
-const npc = await createProcedure((n) => n ** 2).listen("my-app/square");
+const npc = await createProcedure((n) => n ** 2).listen("my-app/square")
 
 // create an event publisher for the app
-const publisher = await createPublisher().listen("my-app");
+const publisher = await createPublisher().listen("my-app")
 
 // every second, publishes the current UTC timestamp in milliseconds
 setInterval(() => {
-  publisher.publish("timestamp", Date.now());
-}, 1000);
+  publisher.publish("timestamp", Date.now())
+}, 1000)
 ```
 
 ```js
 // some-other-app/index.js
 
-const squared = await call("my-app/square", 8);
-console.log(squared); // outputs 64
+const squared = await call("my-app/square", 8)
+console.log(squared) // outputs 64
 
 // subscribes to the timestamp event being published from the my-app endpoint,
 // and logs its data to the console whenever a published event arrives
-subscribe("timestamp@my-app", console.log);
+subscribe("timestamp@my-app", console.log)
 ```
 
 At present, npc only supports Windows Named Pipes. POSIX named pipe support is not a priority for this package at present, but is certainly something we would like to add in future. Pull requests welcome!
@@ -89,21 +89,21 @@ npm i @toebean/npc
 Setting up a function to be called from a local process is easy with npc:
 
 ```js
-import { createProcedure } from "@toebean/npc";
+import { createProcedure } from "@toebean/npc"
 
-const npc = createProcedure((n) => n ** 2);
-await npc.listen("square");
+const npc = createProcedure((n) => n ** 2)
+await npc.listen("square")
 ```
 
 And calling it is just as easy:
 
 ```js
-import { call } from "@toebean/npc";
+import { call } from "@toebean/npc"
 
-const x = 8;
-const xSquared = await call("square", 8);
-console.log(xSquared); // outputs 64
-console.log(typeof xSquared); // outputs 'number'
+const x = 8
+const xSquared = await call("square", 8)
+console.log(xSquared) // outputs 64
+console.log(typeof xSquared) // outputs 'number'
 ```
 
 Please note that it is the callee's responsibility to validate input, and the caller's responsibility to validate the return output. We recommend [Zod](https://zod.dev) for validation.
@@ -113,24 +113,22 @@ For convenience, there is an overload which takes a validator function as the se
 Here is an example which uses [Zod](https://zod.dev) to validate the input is a number:
 
 ```js
-import { createProcedure } from "@toebean/npc";
-import { z } from "zod";
+import { createProcedure } from "@toebean/npc"
+import { z } from "zod"
 
-const npc = await createProcedure((n) => n ** 2, z.number().parse).listen(
-  "square"
-);
+const npc = await createProcedure((n) => n ** 2, z.number().parse).listen("square")
 ```
 
 Now, if the client passes an invalid argument, Zod will throw an exception detailing the cause of the exception:
 
 ```js
-import { inspect } from "util";
-import { call } from "@toebean/npc";
+import { inspect } from "util"
+import { call } from "@toebean/npc"
 
 try {
-  console.log(await call("square", "foo"));
+  console.log(await call("square", "foo"))
 } catch (error) {
-  console.error("error:", inspect(error, false, null));
+  console.error("error:", inspect(error, false, null))
 }
 // error: {
 //   code: -32000,
@@ -156,13 +154,13 @@ Asynchronous functions are fully supported:
 
 ```js
 await createProcedure(async () => {
-  const response = await fetch("https://catfact.ninja/fact");
+  const response = await fetch("https://catfact.ninja/fact")
   if (response.ok) {
-    return (await response.json()).fact;
+    return (await response.json()).fact
   } else {
-    throw `${response.status}: ${response.statusText}`;
+    throw `${response.status}: ${response.statusText}`
   }
-}).listen("getCatFact");
+}).listen("getCatFact")
 ```
 
 #### `notify`: disregarding output for efficiency
@@ -170,9 +168,9 @@ await createProcedure(async () => {
 If you do not require any output from an npc procedure and do not need to wait for it to complete, consider using the `notify` API instead of `call`:
 
 ```js
-import { notify } from "@toebean/npc";
+import { notify } from "@toebean/npc"
 
-await notify("registerData", { foo: "bar", bar: 123 });
+await notify("registerData", { foo: "bar", bar: 123 })
 ```
 
 The above call to `notify` will resolve as soon as the input argument `{ foo: "bar" }` has been transmitted across the named pipe without waiting for a response. If the npc procedure at the other end of the pipe was implemented with this library, it will also not transmit a response, resulting in more efficient usage of the pipe.
@@ -193,26 +191,26 @@ npc procedures only support a maximum of one argument for simplicity. If you req
 Publishing data to other processes/threads in an event-driven manner is simple with npc:
 
 ```js
-import { createPublisher } from "@toebean/npc";
+import { createPublisher } from "@toebean/npc"
 
 // create an event publisher and listen for connections at the "my-app" endpoint
-const publisher = await createPublisher().listen("my-app");
+const publisher = await createPublisher().listen("my-app")
 
 // every second, publish the current UTC timestamp in ms to all connected
 // subscribers of the "timestamp" event at the "my-app" endpoint
 setInterval(() => {
-  publisher.publish("timestamp", Date.now());
-}, 1000);
+  publisher.publish("timestamp", Date.now())
+}, 1000)
 ```
 
 And subscribing to the event stream is just as simple:
 
 ```js
-import { on } from "@toebean/npc";
+import { on } from "@toebean/npc"
 
 // subscribes to the "timestamp" event at the "my-app" endpoint, and
 // logs its event data to the console whenever it is received
-on("timestamp@my-app", (timestamp) => console.log);
+on("timestamp@my-app", (timestamp) => console.log)
 ```
 
 npc provides a convenient API for working with npc-published events:
