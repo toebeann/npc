@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 
 /**
- * {@link https://zod.dev Zod schema} for {@link Npc npc procedure} arguments.
+ * {@link https://zod.dev Zod schema} for {@link NpcProcedure npc procedure} arguments.
  * @see {@link https://zod.dev Zod}
  */
 export const inputSchema = z.unknown();
@@ -135,7 +135,7 @@ export const responseSchema = z.intersection(
 export type Response = z.infer<typeof responseSchema>;
 
 /**
- * {@link typed-emitter!TypedEventEmitter TypedEmitter} mapping for {@link Npc npc} events.
+ * {@link typed-emitter!TypedEventEmitter TypedEmitter} mapping for {@link NpcProcedure npc} events.
  */
 export type NpcEvents = {
     request: (request: Request) => void;
@@ -144,7 +144,7 @@ export type NpcEvents = {
 };
 
 /**
- * Options for {@link Npc.listen}.
+ * Options for {@link NpcProcedure.listen}.
  */
 export type NpcListenOptions = Omit<
     ListenOptions,
@@ -154,56 +154,63 @@ export type NpcListenOptions = Omit<
 /**
  * A simple implementation of an npc procedure.
  */
-export interface Npc extends TypedEmitter<NpcEvents> {
+export interface NpcProcedure extends TypedEmitter<NpcEvents> {
     /**
-     * The endpoint at which the {@link Npc npc procedure} is available to be {@link call called} or {@link notify notified}.
+     * The endpoint at which an {@link NpcProcedure npc procedure} is available to be {@link call called}
+     * or {@link notify notified}.
      */
     endpoint?: string | undefined;
     /**
-     * Stops the {@link Npc npc procedure} from accepting new connections and closes it when all clients have disconnected.
+     * Stops the {@link NpcProcedure npc procedure} from accepting new connections and closes it when all clients have disconnected.
      * @param {boolean} [gracefulDisconnect=true] Whether existing connections should be maintained until they are ended.
      * Passing `false` will immediately disconnect all connected clients. Defaults to `true`.
-     * @returns {Promise<Npc>} A {@link !Promise Promise} which when resolved indicates the underlying {@link node!net.Server Node.js Server} has closed.
+     * @returns {Promise<NpcProcedure>} A {@link !Promise Promise} which when resolved indicates the underlying
+     * {@link node!net.Server Node.js Server} has closed.
      */
-    close(gracefulDisconnect?: boolean): Promise<Npc>;
+    close(gracefulDisconnect?: boolean): Promise<NpcProcedure>;
     /**
-     * Starts the {@link Npc npc procedure} listening for client connections.
+     * Starts the {@link NpcProcedure npc procedure} listening for client connections.
      * @remarks The {@link endpoint} will be prefixed with the {@link rootNamespace root npc namespace}.
-     * @param {string} endpoint The endpoint at which the {@link Npc npc procedure} will be available to be {@link call called} or {@link notify notified}.
-     * @param {Omit<ListenOptions, 'path' | 'port' | 'host' | 'ipv6Only'} [options] {@link @types/node!ListenOptions Options}
-     * to pass to the underlying {@link node!net.Server Node.js Server}.
-     * @returns {Promise<Npc>} A {@link !Promise Promise} which when resolved indicates the {@link Npc npc procedure} is ready to receive client connections.
+     * @param {string} endpoint The endpoint at which the {@link NpcProcedure npc procedure} will be available to be
+     * {@link call called} or {@link notify notified}.
+     * @param {Omit<ListenOptions, 'path' | 'port' | 'host' | 'ipv6Only'} [options]
+     * {@link @types/node!ListenOptions Options} to pass to the underlying {@link node!net.Server Node.js Server}.
+     * @returns {Promise<NpcProcedure>} A {@link !Promise Promise} which when resolved indicates the {@link NpcProcedure npc procedure}
+     * is ready to receive client connections.
      */
-    listen(endpoint: string, options?: NpcListenOptions): Promise<Npc>;
+    listen(endpoint: string, options?: NpcListenOptions): Promise<NpcProcedure>;
 }
 
 /**
- * Initializes a new {@link Npc npc procedure}.
+ * Initializes a new {@link NpcProcedure npc procedure}.
  * @remarks The callback will only receive a single argument when called.
  * It is your responsibility to validate this argument. We recommend {@link https://zod.dev Zod} for validation.
- * @param {Callback} callback The underlying {@link Callback callback} function which will be {@link call called} by clients.
+ * @param {Callback} callback The underlying {@link Callback callback} function which will be
+ * {@link call called} by clients.
  */
-export function create(callback: Callback): Npc;
+export function createProcedure(callback: Callback): NpcProcedure;
 /**
- * Initializes a new {@link Npc npc procedure} with middleware.
+ * Initializes a new {@link NpcProcedure npc procedure} with input validation.
  * @remarks The callback will only receive a single argument when called.
  * It is your responsibility to validate this argument. We recommend {@link https://zod.dev Zod} for validation.
- * @param {(input: T) => Result} callback The underlying {@link Callback callback} function which will be {@link call called} by clients.
- * @param {(input: unknown) => T} middleware A middleware function which will be called on the input argument. The return of this function
- * will be passed to the callback as its input. Useful for inserting argument validation or transformation, for example.
+ * @param {(input: T) => Result} callback The underlying {@link Callback callback} function which will be
+ * {@link call called} by clients.
+ * @param {(input: unknown) => T} validator A validation function which will be called on the input argument.
+ * The return of this function will be passed to the callback as its input. Useful for inserting argument validation
+ * and/or transformation.
  */
-export function create<T>(
+export function createProcedure<T>(
     callback: (input: T) => Result,
-    middleware: (input: unknown) => T
-): Npc;
-export function create<T = unknown>(
+    validator: (input: unknown) => T
+): NpcProcedure;
+export function createProcedure<T = unknown>(
     callback: Callback | ((input: T) => Result),
-    middleware?: (input: unknown) => T
-): Npc {
+    validator?: (input: unknown) => T
+): NpcProcedure {
     const emitter = new EventEmitter() as TypedEmitter<NpcEvents>;
     const cb = callbackSchema.parse(
-        middleware
-            ? async (input: unknown) => callback(await middleware(input))
+        validator
+            ? async (input: unknown) => callback(await validator(input))
             : callback
     );
 
@@ -232,10 +239,10 @@ export function create<T = unknown>(
         }
     };
 
-    const npc: Npc = Object.assign(emitter, {
+    const npc: NpcProcedure = Object.assign(emitter, {
         close: async (gracefulDisconnect = true) => {
             const closing = _server?.listening
-                ? new Promise<Npc>((resolve) =>
+                ? new Promise<NpcProcedure>((resolve) =>
                       _server?.close(() => {
                           _server = undefined;
                           resolve(npc);
@@ -256,7 +263,7 @@ export function create<T = unknown>(
         },
         listen: async (endpoint: string, options?: NpcListenOptions) => {
             await npc.close();
-            return new Promise<Npc>((resolve, reject) => {
+            return new Promise<NpcProcedure>((resolve, reject) => {
                 _server = createServer((socket) => {
                     _socket = socket;
 
@@ -370,6 +377,12 @@ export function create<T = unknown>(
 
     return npc;
 }
+/**
+ * @deprecated Planned to be removed before the v1 release. Use {@link createProcedure} instead.
+ * @see {@link createProcedure}
+ * @inheritDoc createProcedure
+ */
+export const create = createProcedure;
 
 /**
  * {@link https://zod.dev Zod schema} for {@link call} or {@link notify} options.
@@ -387,13 +400,14 @@ export const callOptionsSchema = z.object({
 export type CallOptions = z.infer<typeof callOptionsSchema>;
 
 /**
- * Asynchronously calls an {@link Npc npc procedure} and awaits a response.
- * @remarks If you do not require any output from the procedure and do not need to ensure the procedure has completed before proceeding,
- * you should instead consider using {@link notify} as it is more efficient.
- * @param {string} endpoint The endpoint at which the {@link Npc npc procedure} is listening.
- * @param {unknown} [input] An input argument to pass to the {@link Npc npc procedure}.
+ * Asynchronously calls an {@link NpcProcedure npc procedure} and awaits a response.
+ * @remarks If you do not require any output from the procedure and do not need to ensure the procedure has completed
+ * before proceeding, you should instead consider using {@link notify} as it is more efficient.
+ * @param {string} endpoint The endpoint at which an {@link NpcProcedure npc procedure} is listening.
+ * @param {unknown} [input] An input argument to pass to the {@link NpcProcedure npc procedure}.
  * @param {AbortSignal} [signal] An {@link !AbortSignal AbortSignal} which will be used to abort awaiting a response.
- * @returns {Promise<unknown>} A {@link !Promise Promise} which when resolves passes the output of the call to the {@link !Promise.then then} handler(s).
+ * @returns {Promise<unknown>} A {@link !Promise Promise} which when resolves passes the output of the call to the
+ * {@link !Promise.then then} handler(s).
  * @see {@link notify}
  */
 export async function call(
@@ -402,11 +416,12 @@ export async function call(
     signal?: AbortSignal
 ): Promise<unknown>;
 /**
- * Asynchronously calls an {@link Npc npc procedure} and awaits a response.
- * @remarks If you do not require any output from the procedure and do not need to ensure the procedure has completed before proceeding,
- * you should instead consider using {@link notify} as it is more efficient.
- * @param {CallOptions} options Options for calling the {@link Npc procedure}.
- * @returns {Promise<unknown>} A {@link !Promise Promise} which when resolves passes the output of the call to the {@link !Promise.then then} handler(s).
+ * Asynchronously calls an {@link NpcProcedure npc procedure} and awaits a response.
+ * @remarks If you do not require any output from the procedure and do not need to ensure the procedure has completed
+ * before proceeding, you should instead consider using {@link notify} as it is more efficient.
+ * @param {CallOptions} options Options for calling the {@link NpcProcedure procedure}.
+ * @returns {Promise<unknown>} A {@link !Promise Promise} which when resolves passes the output of the call to the
+ * {@link !Promise.then then} handler(s).
  * @see {@link notify}
  */
 export async function call(options: CallOptions): Promise<unknown>;
@@ -522,14 +537,17 @@ export async function call(
 }
 
 /**
- * Asynchronously notifies an {@link Npc npc procedure} without awaiting a response.
- * @remarks Differs from {@link call} in that the procedure will not transmit any response, and the returned {@link !Promise Promise} will resolve
- * as soon as the input argument has been sent. This also means that if the procedure throws, the call to {@link notify} will neither throw nor output error information.
+ * Asynchronously notifies an {@link NpcProcedure npc procedure} without awaiting a response.
+ * @remarks Differs from {@link call} in that the procedure will not transmit any response, and the returned
+ * {@link !Promise Promise} will resolve as soon as the input argument has been sent. This also means that if the
+ * procedure throws, the call to {@link notify} will neither throw nor output error information.
  *
- * If you wish to ensure the procedure has completed before proceeding or need to know whether the call succeeded, you should instead use {@link call}.
- * @param {string} endpoint The endpoint at which the {@link Npc npc procedure} is listening.
- * @param {unknown} [input] An input argument to pass to the {@link Npc npc procedure}.
- * @param {AbortSignal} [signal] An {@link !AbortSignal AbortSignal} which will be used to abort connecting to the pipe or transmitting input.
+ * If you wish to ensure the procedure has completed before proceeding or need to know whether the call succeeded,
+ * you should instead use {@link call}.
+ * @param {string} endpoint The endpoint at which an {@link NpcProcedure npc procedure} is listening.
+ * @param {unknown} [input] An input argument to pass to the {@link NpcProcedure npc procedure}.
+ * @param {AbortSignal} [signal] An {@link !AbortSignal AbortSignal} which will be used to abort connecting to
+ * the pipe or transmitting input.
  * @see {@link call}
  */
 export async function notify(
@@ -538,12 +556,14 @@ export async function notify(
     signal?: AbortSignal
 ): Promise<unknown>;
 /**
- * Asynchronously notifies an {@link Npc npc procedure} without awaiting a response.
- * @remarks Differs from {@link call} in that the procedure will not transmit any response, and the returned {@link !Promise Promise} will resolve
- * as soon as the input argument has been sent. This also means that if the procedure throws, the call to {@link notify} will neither throw nor output error information.
+ * Asynchronously notifies an {@link NpcProcedure npc procedure} without awaiting a response.
+ * @remarks Differs from {@link call} in that the procedure will not transmit any response, and the returned
+ * {@link !Promise Promise} will resolve as soon as the input argument has been sent. This also means that if the
+ * procedure throws, the call to {@link notify} will neither throw nor output error information.
  *
- * If you wish to ensure the procedure has completed before proceeding or need to know whether the call succeeded, you should instead use {@link call}.
- * @param {CallOptions} options Options for notifying the {@link Npc procedure}.
+ * If you wish to ensure the procedure has completed before proceeding or need to know whether the call succeeded,
+ * you should instead use {@link call}.
+ * @param {CallOptions} options Options for notifying the {@link NpcProcedure procedure}.
  * @see {@link call}
  */
 export async function notify(options: CallOptions): Promise<unknown>;
