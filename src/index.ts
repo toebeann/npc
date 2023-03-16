@@ -265,7 +265,6 @@ export function create<T = unknown>(
                             npc.emit('close');
                         })
                         .on('error', (data) => {
-                            console.error(endpoint, data);
                             npc.emit('error', {
                                 code: -32000,
                                 message: 'Internal server error',
@@ -277,8 +276,6 @@ export function create<T = unknown>(
                             try {
                                 data = JSON.parse(buffer.toString('utf8'));
                             } catch (data) {
-                                console.error(endpoint, data);
-
                                 const error = {
                                     code: -32700,
                                     message:
