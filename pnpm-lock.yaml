@@ -10,6 +10,7 @@ specifiers:
   eslint-config-prettier: ^8.6.0
   prettier: ^2.8.4
   rimraf: ^4.2.0
+  rxjs: ^7.8.0
   typed-emitter: ^2.1.0
   typedoc: ^0.23.26
   typedoc-plugin-versions-cli: ^0.1.12
@@ -19,6 +20,7 @@ specifiers:
   zod: ^3.20.6
 
 dependencies:
+  rxjs: 7.8.0
   uuid: 9.0.0
   zod: 3.20.6
 
@@ -1209,8 +1211,6 @@ packages:
     requiresBuild: true
     dependencies:
       tslib: 2.5.0
-    dev: true
-    optional: true
 
   /semver/7.3.8:
     resolution: {integrity: sha512-NB1ctGL5rlHrPJtFDVIVzTyQylMLu9N9VICA6HSFJo8MCGVTMW6gfpicwKmmK/dAjTOrqu5l63JJOpDSrAis3A==}
@@ -1313,8 +1313,6 @@ packages:
 
   /tslib/2.5.0:
     resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
-    dev: true
-    optional: true
 
   /tsutils/3.21.0_typescript@4.9.5:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}

@@ -54,6 +54,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "rxjs": "^7.8.0",
     "uuid": "^9.0.0",
     "zod": "^3.20.6"
   },
