@@ -272,77 +272,85 @@ export function create<T = unknown>(
                             });
                         })
                         .on('data', async (buffer) => {
-                            let data: unknown;
-                            try {
-                                data = JSON.parse(buffer.toString('utf8'));
-                            } catch (data) {
-                                const error = {
-                                    code: -32700,
-                                    message:
-                                        'Invalid JSON was received by the server.',
-                                    data,
-                                };
-
-                                npc.emit('error', error);
-                            }
-
-                            const parsed = requestSchema.safeParse(data);
-
-                            if (!parsed.success) {
-                                const error = {
-                                    code: -32600,
-                                    message:
-                                        'The JSON sent is not a valid Request object.',
-                                    data: parsed.error,
-                                };
-                                npc.emit('error', error);
-
+                            for (const line of buffer
+                                .toString('utf8')
+                                .split(EOL)
+                                .filter(Boolean)) {
+                                let data: unknown;
                                 try {
-                                    await respond({
-                                        status: 'error',
-                                        npc: '0.1',
-                                        id: null,
-                                        error,
-                                    });
-                                } catch (e) {
-                                    npc.emit('error', {
-                                        code: -32000,
-                                        message: 'Internal server error',
-                                        data: e,
-                                    });
-                                }
-                            } else {
-                                npc.emit('request', parsed.data);
-
-                                try {
-                                    const result = await cb(parsed.data.input);
-                                    if (parsed.data.id) {
-                                        await respond({
-                                            status: 'success',
-                                            npc: '0.1',
-                                            id: parsed.data.id,
-                                            result,
-                                        });
-                                    }
-                                } catch (e) {
-                                    const parsedError =
-                                        errorSchema.safeParse(e);
-                                    const error = parsedError.success
-                                        ? parsedError.data
-                                        : {
-                                              code: -32000,
-                                              message: 'Internal server error',
-                                              data: e,
-                                          };
+                                    data = JSON.parse(line);
+                                } catch (data) {
+                                    const error = {
+                                        code: -32700,
+                                        message:
+                                            'Invalid JSON was received by the server.',
+                                        data,
+                                    };
 
                                     npc.emit('error', error);
-                                    if (parsed.data.id) {
+                                }
+
+                                const parsed = requestSchema.safeParse(data);
+
+                                if (!parsed.success) {
+                                    const error = {
+                                        code: -32600,
+                                        message:
+                                            'The JSON sent is not a valid Request object.',
+                                        data: parsed.error,
+                                    };
+                                    npc.emit('error', error);
+
+                                    try {
                                         await respond({
                                             status: 'error',
                                             npc: '0.1',
-                                            id: parsed.data.id,
+                                            id: null,
                                             error,
                                         });
+                                    } catch (e) {
+                                        npc.emit('error', {
+                                            code: -32000,
+                                            message: 'Internal server error',
+                                            data: e,
+                                        });
+                                    }
+                                } else {
+                                    npc.emit('request', parsed.data);
+
+                                    try {
+                                        const result = await cb(
+                                            parsed.data.input
+                                        );
+                                        if (parsed.data.id) {
+                                            await respond({
+                                                status: 'success',
+                                                npc: '0.1',
+                                                id: parsed.data.id,
+                                                result,
+                                            });
+                                        }
+                                    } catch (e) {
+                                        const parsedError =
+                                            errorSchema.safeParse(e);
+                                        const error = parsedError.success
+                                            ? parsedError.data
+                                            : {
+                                                  code: -32000,
+                                                  message:
+                                                      'Internal server error',
+                                                  data: e,
+                                              };
+
+                                        npc.emit('error', error);
+                                        if (parsed.data.id) {
+                                            await respond({
+                                                status: 'error',
+                                                npc: '0.1',
+                                                id: parsed.data.id,
+                                                error,
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -466,28 +474,32 @@ export async function call(
                 });
 
                 socket.on('data', (buffer) => {
-                    let data: unknown;
-                    try {
-                        data = JSON.parse(buffer.toString('utf8'));
-                        const response = responseSchema.parse(data);
-                        if (response.id === id) {
-                            if (response.status === 'success') {
-                                options.signal?.removeEventListener(
-                                    'abort',
-                                    abort
-                                );
-                                resolve(response.result);
-                            } else {
-                                options.signal?.removeEventListener(
-                                    'abort',
-                                    abort
-                                );
-                                reject(response.error);
+                    for (const line of buffer
+                        .toString('utf8')
+                        .split(EOL)
+                        .filter(Boolean)) {
+                        try {
+                            const data = JSON.parse(line);
+                            const response = responseSchema.parse(data);
+                            if (response.id === id) {
+                                if (response.status === 'success') {
+                                    options.signal?.removeEventListener(
+                                        'abort',
+                                        abort
+                                    );
+                                    resolve(response.result);
+                                } else {
+                                    options.signal?.removeEventListener(
+                                        'abort',
+                                        abort
+                                    );
+                                    reject(response.error);
+                                }
                             }
+                        } catch (e) {
+                            options.signal?.removeEventListener('abort', abort);
+                            reject(e);
                         }
-                    } catch (e) {
-                        options.signal?.removeEventListener('abort', abort);
-                        reject(e);
                     }
                 });
 
