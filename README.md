@@ -210,7 +210,7 @@ import { on } from "@toebean/npc"
 
 // subscribes to the "timestamp" event at the "my-app" endpoint, and
 // logs its event data to the console whenever it is received
-on("timestamp@my-app", (timestamp) => console.log)
+on("timestamp@my-app", (timestamp) => console.log(timestamp))
 ```
 
 npc provides a convenient API for working with npc-published events:
